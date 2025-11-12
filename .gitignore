@@ -1,0 +1,22 @@
+# Arquivos de ambiente
+.env
+.env.*
+*.env
+
+# Python / Backend
+__pycache__/
+*.py[cod]
+*$py.class
+backend/.venv/
+backend/venv/
+.pytest_cache/
+
+# Node / Frontend
+node_modules/
+frontend/node_modules/
+frontend/build/
+.DS_Store
+
+# Docker
+postgres_data/
+celerybeat-schedule

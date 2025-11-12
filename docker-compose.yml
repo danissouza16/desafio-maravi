@@ -1,0 +1,110 @@
+services:
+  # --- 1. Serviço do Banco de Dados (Postgres) ---
+  db:
+    image: postgres:15-alpine
+    container_name: maravi_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env.db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # --- 2. Serviço de Cache (Redis) ---
+  redis:
+    image: redis:7-alpine
+    container_name: maravi_redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  # --- 3. Serviço do Backend (FastAPI) ---
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: maravi_backend
+    environment:
+      - TZ=America/Sao_Paulo # Define o fuso horário
+      - DISABLE_ESLINT_PLUGIN=true 
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/app:/app/app
+    env_file:
+      - .env.backend
+      - .env.db
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    restart: unless-stopped
+
+  # --- 4. Serviço do Worker (Celery) ---
+  worker:
+    build:
+      context: ./backend
+    container_name: maravi_worker
+    environment:
+      - TZ=America/Sao_Paulo # Define o fuso horário
+    volumes:
+      - ./backend/app:/app/app
+    env_file:
+      - .env.backend
+      - .env.db
+    depends_on:
+      backend:
+        condition: service_started
+    command: celery -A app.worker.celery_app worker --loglevel=info
+    restart: unless-stopped
+
+  # --- 5. Serviço do Beat (Agendador Celery) ---
+  beat:
+    build:
+      context: ./backend
+    container_name: maravi_beat
+    environment:
+      - TZ=America/Sao_Paulo 
+    volumes:
+      - ./backend/app:/app/app
+      - celerybeat-schedule:/app/celerybeat-schedule
+    env_file:
+      - .env.backend
+      - .env.db
+    depends_on:
+      backend:
+        condition: service_started
+    command: celery -A app.worker.celery_app beat --loglevel=info --schedule=celerybeat-schedule/celerybeat
+    restart: unless-stopped
+
+  # --- 6. Serviço do Frontend (React) ---
+  frontend:
+    build:
+      context: ./frontend
+    container_name: maravi_frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules 
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_API_URL=http://localhost:8000/api/v1
+      - DISABLE_ESLINT_PLUGIN=true 
+    depends_on:
+      - backend
+    command: sh -c "npm install && npm start"
+    restart: unless-stopped
+
+# Define os volumes nomeados
+volumes:
+  postgres_data:
+  celerybeat-schedule:
