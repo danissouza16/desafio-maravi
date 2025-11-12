@@ -44,20 +44,6 @@ Broker & Cache: Redis.
 
 APIs Externas: SendGrid (E-mail), TravelTime (ETA), Dados.Rio (GPS).
 
-Prints da Aplicação
-
-1. Criação de Alerta
-
-O usuário define la linha, o ponto de referência e a janela de horário para monitoramento.
-
-2. Dashboard e Mapa
-
-Visualização da posição atual dos ônibus da linha selecionada.
-
-3. Notificação Recebida
-
-Exemplo do e-mail enviado automaticamente pelo sistema via SendGrid.
-
 Instalação e Execução
 
 Pré-requisitos
@@ -146,12 +132,23 @@ Estrutura do Projeto
 ├── docker-compose.yml    # Orquestração
 └── README.md
 
+
 Prints da Aplicação
 
-![alt text](image-2.png)
+1. Criação de Alerta
+
+   ![alt text](image-1.png)
+
+O usuário define la linha, o ponto de referência e a janela de horário para monitoramento.
+
+2. Dashboard e Mapa
+   
+   ![alt text](image-2.png)
+
+Visualização da posição atual dos ônibus da linha selecionada.
+
+3. Notificação Recebida
+
+   ![alt text](image-3.png)
 
 
-![alt text](image-1.png)
-
-
-![alt text](image-3.png)
