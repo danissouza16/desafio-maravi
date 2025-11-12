@@ -1,4 +1,4 @@
-Desafio Maravi - Alerta de Ônibus
+# Desafio Maravi - Alerta de Ônibus
 
 Este projeto é uma solução completa para o desafio técnico da Maravi. Trata-se de uma aplicação full-stack dockerizada que monitora a posição dos ônibus do Rio de Janeiro em tempo real, permitindo que usuários criem alertas personalizados e visualizem a frota em um mapa interativo.
 
@@ -58,16 +58,16 @@ Crie dois arquivos na raiz do projeto (onde está o docker-compose.yml):
 
 Arquivo .env.backend:
 
-# Configurações do Celery e Banco (Interno do Docker)
+## Configurações do Celery e Banco (Interno do Docker)
 DATABASE_URL=postgresql+psycopg2://maravi_user:maravi_secret_password@db:5432/maravi_bus_db
 CELERY_BROKER_URL=redis://redis:6379/0
 CELERY_RESULT_BACKEND=redis://redis:6379/1
 
-# Chave de API do SendGrid (E-mail)
+## Chave de API do SendGrid (E-mail)
 SENDGRID_API_KEY=SUA_CHAVE_SENDGRID_AQUI
 SENDGRID_FROM_EMAIL=seu-email-verificado@exemplo.com
 
-# Chaves da API TravelTime (Cálculo de Tempo)
+## Chaves da API TravelTime (Cálculo de Tempo)
 TRAVELTIME_APP_ID=SEU_APP_ID_AQUI
 TRAVELTIME_API_KEY=SUA_API_KEY_AQUI
 
