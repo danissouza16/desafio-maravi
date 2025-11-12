@@ -151,4 +151,6 @@ Visualização da posição atual dos ônibus da linha selecionada.
 
    ![alt text](image-3.png)
 
+Exemplo do e-mail enviado automaticamente pelo sistema via SendGrid.
+
 
